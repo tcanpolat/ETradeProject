@@ -1,4 +1,5 @@
-﻿using ETICARET.DataAccess.Abstract;
+﻿using ETICARET.Business.Abstract;
+using ETICARET.DataAccess.Abstract;
 using ETICARET.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ETICARET.Business.Concrete
 {
-    public class CategoryManager : ICategoryDal
+    public class CategoryManager : ICategoryService
     {
         private ICategoryDal _categoryDal;
 
@@ -17,14 +18,15 @@ namespace ETICARET.Business.Concrete
         {
             _categoryDal = categoryDal;
         }
+
         public void Create(Category entity)
         {
-            _categoryDal.Create(entity);
+           _categoryDal.Create(entity);
         }
 
         public void Delete(Category entity)
         {
-            _categoryDal.Delete(entity);
+          _categoryDal.Delete(entity);
         }
 
         public void DeleteFromCategory(int categoryId, int productId)
@@ -32,9 +34,9 @@ namespace ETICARET.Business.Concrete
             _categoryDal.DeleteFromCategory(categoryId, productId);
         }
 
-        public List<Category> GetAll(Expression<Func<Category, bool>> filter = null)
+        public List<Category> GetAll()
         {
-           return _categoryDal.GetAll();
+            return _categoryDal.GetAll();
         }
 
         public Category GetById(int id)
@@ -42,14 +44,9 @@ namespace ETICARET.Business.Concrete
             return _categoryDal.GetById(id);
         }
 
-        public Category GetByIdWithProducts(int id)
+        public Category GetByWithProducts(int id)
         {
-           return _categoryDal.GetByIdWithProducts(id);
-        }
-
-        public Category GetOne(Expression<Func<Category, bool>> filter = null)
-        {
-            return _categoryDal.GetOne();
+            return _categoryDal.GetByIdWithProducts(id);
         }
 
         public void Update(Category entity)
