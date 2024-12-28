@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETICARET.Entities", "ETICAR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETICARET.DataAccess", "ETICARET.DataAccess\ETICARET.DataAccess.csproj", "{3EEAF21B-DE3F-4299-AE9E-7536F7D83231}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETICARET.Business", "ETICARET.Business\ETICARET.Business.csproj", "{56D4B3D2-524B-4168-9D20-735D5F4C7B9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3EEAF21B-DE3F-4299-AE9E-7536F7D83231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EEAF21B-DE3F-4299-AE9E-7536F7D83231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EEAF21B-DE3F-4299-AE9E-7536F7D83231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D4B3D2-524B-4168-9D20-735D5F4C7B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D4B3D2-524B-4168-9D20-735D5F4C7B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56D4B3D2-524B-4168-9D20-735D5F4C7B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56D4B3D2-524B-4168-9D20-735D5F4C7B9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

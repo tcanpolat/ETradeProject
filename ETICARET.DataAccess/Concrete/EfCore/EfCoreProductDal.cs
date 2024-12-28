@@ -72,7 +72,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
 
                 if(products is not null)
                 {
-                    context.Images.RemoveRange(context.Images.Where(i => i.ProductId == entity.Id)).ToList();
+                    context.Images.RemoveRange(context.Images.Where(i => i.ProductId == entity.Id));
                     products.Price = entity.Price;
                     products.Name = entity.Name;
                     products.Description = entity.Description;

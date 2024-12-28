@@ -20,7 +20,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
             }
         }
 
-        public void DeleteFromCart(string cartId, int productId)
+        public void DeleteFromCart(int cartId, int productId)
         {
             using (var context = new DataContext())
             {
@@ -49,5 +49,6 @@ namespace ETICARET.DataAccess.Concrete.EfCore
                 context.SaveChanges();
             }
         }
-    }
+
+     }
 }
