@@ -3,6 +3,7 @@ using ETICARET.Business.Concrete;
 using ETICARET.DataAccess.Abstract;
 using ETICARET.DataAccess.Concrete.EfCore;
 using ETICARET.WebUI.Identity;
+using ETICARET.WebUI.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,7 +85,7 @@ if (!app.Environment.IsDevelopment())
 SeedDatabase.Seed();
 
 app.UseStaticFiles();
-// middleware
+app.CustomStaticFiles(); // node_modules => modules 
 app.UseHttpsRedirection();
 app.UseAuthentication(); // kimlik doðrulama
 app.UseAuthorization(); // yetkilendirme
