@@ -284,5 +284,11 @@ namespace ETICARET.WebUI.Controllers
                 return View(model);
             }
         }
+
+
+
+
+
+
     }
 }
