@@ -285,5 +285,10 @@ namespace ETICARET.WebUI.Controllers
             }
         }
 
+
+
+
+
+
     }
 }
