@@ -286,6 +286,7 @@ namespace ETICARET.WebUI.Controllers
         }
         // Ödev
         // Manage IAction Result ı oluşturup login olan kullanıcının bilgileri güncellenebilecek.
+        // Yeni Branchte yapılacak.
 
     }
 }
