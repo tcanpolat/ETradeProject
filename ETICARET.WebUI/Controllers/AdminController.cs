@@ -24,6 +24,7 @@ namespace ETICARET.WebUI.Controllers
         }
 
 
+        [Route("admin/products")]
         public IActionResult ProductList()
         {
             return View(
@@ -95,5 +96,122 @@ namespace ETICARET.WebUI.Controllers
             return View(model);
 
         }
+
+
+        public IActionResult EditProduct(int id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = _productService.GetProductDetail(id);
+
+            if(entity == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ProductModel()
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                Price = entity.Price,
+                Images = entity.Images,
+                SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
+            };
+
+            ViewBag.Categories = _categoryService.GetAll();
+
+            return View(model);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(ProductModel model, List<IFormFile> files, int[] categoryIds)
+        {
+            var entity = _productService.GetById(model.Id);
+
+            if (entity == null) {
+                return NotFound();                
+            }
+
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            entity.Price = model.Price;
+
+            if(files != null)
+            {
+                foreach (var file in files)
+                {
+                    Image image = new Image();
+                    image.ImageUrl = file.FileName;
+
+                    entity.Images.Add(image);
+
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\img",file.FileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+            }
+
+            _productService.Update(entity,categoryIds);
+
+            return RedirectToAction("ProductList");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteProduct(int productId) {
+            var product = _productService.GetById(productId);
+            
+            if(product != null)
+            {
+                _productService.Delete(product);
+            }
+
+            return RedirectToAction("ProductList");
+        }
+
+        public IActionResult CategoryList()
+        {
+            return View(new CategoryListModel() { Categories = _categoryService.GetAll()});
+        }
+
+        public IActionResult EditCategory(int? id)
+        {
+            var entity = _categoryService.GetByWithProducts(id.Value);
+
+            return View(
+                    new CategoryModel()
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Products = entity.ProductCategories.Select(i => i.Product).ToList()
+                    }
+                );
+        }
+
+
+        [HttpPost]
+        public IActionResult EditCategory(CategoryModel model)
+        {
+            var entity = _categoryService.GetById(model.Id);
+
+            if(entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.Name = model.Name;
+            _categoryService.Update(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
     }
 }
