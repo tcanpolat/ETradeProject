@@ -135,5 +135,34 @@ namespace ETICARET.WebUI.Controllers
             return View(model);
 
         }
+
+        [HttpPost]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            var entity = _categoryService.GetById(categoryId);
+            _categoryService.Delete(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
+        public IActionResult CreateCategory()
+        {
+            return View(new CategoryModel());
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateCategory(CategoryModel model)
+        {
+            var entity = new Category()
+            {
+                Name = model.Name
+            };
+
+            _categoryService.Create(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
     }
 }
