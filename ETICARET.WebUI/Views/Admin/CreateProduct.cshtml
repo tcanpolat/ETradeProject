@@ -15,6 +15,11 @@
 }
 <h1>Create Product</h1>
 <hr />
+<div class="row d-flex justify-content-center">
+    <div class="col-md-3 validation-box">
+        <div asp-validation-summary="ModelOnly" class="text-danger validation"></div>
+    </div>
+</div>
 <form asp-controller="Admin" asp-action="CreateProduct" method="POST" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-8">

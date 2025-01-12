@@ -18,7 +18,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
             {
                 var products = context.Products.AsQueryable();
                 
-                if (!string.IsNullOrEmpty(category))
+                if (!string.IsNullOrEmpty(category) && category != "all")
                 {
                     products = products
                                .Include(i => i.ProductCategories)
@@ -26,6 +26,13 @@ namespace ETICARET.DataAccess.Concrete.EfCore
                                .Where(i => i.ProductCategories.Any(a => a.Category.Name.ToLower() == category.ToLower()));
 
                     return products.Count();
+                }
+                else
+                {
+                    return products.Include(i => i.ProductCategories)
+                                   .ThenInclude(i => i.Category)
+                                   .Where(i => i.ProductCategories.Any())
+                                   .Count();
                 }
 
                 return 0;
@@ -53,13 +60,15 @@ namespace ETICARET.DataAccess.Concrete.EfCore
                 var products = context.Products.Include("Images").AsQueryable();
 
 
-                if (!string.IsNullOrEmpty(category))
+                if (!string.IsNullOrEmpty(category) && category != "all")
                 {
                     products = products
                               .Include(i => i.ProductCategories)
                               .ThenInclude(i => i.Category)
                               .Where(i => i.ProductCategories.Any(a => a.Category.Name.ToLower() == category.ToLower()));
+
                 }
+                              
 
                 return products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             }

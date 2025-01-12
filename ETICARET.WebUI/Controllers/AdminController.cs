@@ -66,7 +66,7 @@ namespace ETICARET.WebUI.Controllers
                     Price = model.Price
                 };
 
-                if (files != null)
+                if (files.Count > 0)
                 {
                     foreach (var item in files)
                     {
@@ -83,6 +83,14 @@ namespace ETICARET.WebUI.Controllers
                         }
                     }
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Lütfen bir ürün resmi yükleyiniz.");
+                    ViewBag.Category = _categoryService.GetAll().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+                    return View(model);
+
+                }
+
                 entity.ProductCategories = new List<ProductCategory> { new ProductCategory { CategoryId = int.Parse(model.CategoryId), ProductId = entity.Id } };
 
                 _productService.Create(entity);
@@ -209,6 +217,34 @@ namespace ETICARET.WebUI.Controllers
 
             entity.Name = model.Name;
             _categoryService.Update(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            var entity = _categoryService.GetById(categoryId);
+            _categoryService.Delete(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
+        public IActionResult CreateCategory()
+        {
+            return View(new CategoryModel());
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateCategory(CategoryModel model)
+        {
+            var entity = new Category()
+            {
+                Name = model.Name
+            };
+
+            _categoryService.Create(entity);
 
             return RedirectToAction("CategoryList");
         }
