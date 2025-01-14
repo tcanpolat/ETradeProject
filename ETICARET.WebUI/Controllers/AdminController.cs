@@ -120,17 +120,17 @@ namespace ETICARET.WebUI.Controllers
                 return NotFound();
             }
 
-            var model = new ProductModel()
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                Price = entity.Price,
-                Images = entity.Images,
-                SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
-            };
+			var model = new ProductModel()
+			{
+				Id = entity.Id,
+				Name = entity.Name,
+				Description = entity.Description,
+				Price = decimal.ToInt32(entity.Price), 
+				Images = entity.Images,
+				SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
+			};
 
-            ViewBag.Categories = _categoryService.GetAll();
+			ViewBag.Categories = _categoryService.GetAll();
 
             return View(model);
 
