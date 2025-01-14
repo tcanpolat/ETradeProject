@@ -1,4 +1,5 @@
 ﻿using ETICARET.WebUI.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace ETICARET.WebUI.Models
 {

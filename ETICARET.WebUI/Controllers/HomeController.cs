@@ -14,7 +14,7 @@ namespace ETICARET.WebUI.Controllers
         {
             _productService = productService;
         }
-        public IActionResult Index()
+        public IActionResult  Index()
         {
             var products = _productService.GetAll();
 

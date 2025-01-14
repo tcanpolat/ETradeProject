@@ -285,7 +285,51 @@ namespace ETICARET.WebUI.Controllers
             }
         }
         // Ödev
-        // Manage IAction Result ı oluşturup login olan kullanıcının bilgileri güncellenebilecek.
+        // Manage IAction Result ı oluşturup login olan kullanıcının bilgileri güncellenebilecek.//fullname//username//email
+        public async Task<IActionResult> Manage(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                TempData.Put("message", new ResultModel()
+                {
+                    Title = "Hata Mesajı",
+                    Message = "Kullanıcı bulunamadı tekrar deneyin.",
+                    Css = "danger"
+                });
+                return RedirectToAction("Index", "Home");
+            }
+            var model = new AccountModel
+            {
+                FullName = user.FullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                Password = user.PasswordHash
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Manage(AccountModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData.Put("message", new ResultModel()
+                {
+                    Title = "Hata Mesajı",
+                    Message = "Bir hata oluştu, tekrar deneyin",
+                    Css = "danger"
+                });
+                return View(model);
+            }
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+
+            user.FullName = model.FullName;
+            user.Email = model.Email;
+            user.UserName = model.UserName;
+            user.PasswordHash = model.PasswordHash;
+
+            var result = await _userManager.UpdateAsync(user);
 
     }
 }
