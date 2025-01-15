@@ -42,9 +42,9 @@ namespace ETICARET.WebUI.Controllers
                 FullName = model.FullName
             };
 
-            var result = await _userManager.CreateAsync(user,model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded) 
+            if (result.Succeeded)
             {
                 // generate email token
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -60,18 +60,18 @@ namespace ETICARET.WebUI.Controllers
                 string body = $"Hesabınızı onaylayınız. <br> <br> Lütfen email hesabını onaylamak için linke <a href='{activeUrl}'> tıklayınız.</a>";
 
                 // Email Service 
-                MailHelper.SendEmail(body,model.Email,"ETİCARET Hesap Aktifleştirme Onayı");
+                MailHelper.SendEmail(body, model.Email, "ETİCARET Hesap Aktifleştirme Onayı");
 
-                return RedirectToAction("Login","Account");
-            
+                return RedirectToAction("Login", "Account");
+
             }
 
             return View(model);
         }
 
-        public async Task<IActionResult> ConfirmEmail(string userId,string token)
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            if(userId == null || token == null)
+            if (userId == null || token == null)
             {
                 TempData.Put("message", new ResultModel()
                 {
@@ -93,8 +93,8 @@ namespace ETICARET.WebUI.Controllers
                 {
                     _cartService.InitialCart(userId);
 
-                    TempData.Put("message", new ResultModel() 
-                    { 
+                    TempData.Put("message", new ResultModel()
+                    {
                         Title = "Hesap Onayı",
                         Message = "Hesabınız onaylanmıştır",
                         Css = "success"
@@ -151,11 +151,21 @@ namespace ETICARET.WebUI.Controllers
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user,model.Password,true,true);
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, true);
 
             if (result.Succeeded)
             {
                 return Redirect(model.ReturnUrl ?? "~/");
+            }
+            if (result.IsLockedOut)
+            {
+                TempData.Put("message", new ResultModel()
+                {
+                    Title = "Hesap Kilitlendi",
+                    Message = "Hesabınız geçici olarak kilitlenmiştir. Lütfen biraz sonra tekrar deneyin.",
+                    Css = "danger"
+                });
+                return View(model);
             }
 
             ModelState.AddModelError("", "Email veya şifre hatalı");
@@ -197,7 +207,7 @@ namespace ETICARET.WebUI.Controllers
 
             var user = await _userManager.FindByEmailAsync(email);
 
-            if(user is null)
+            if (user is null)
             {
                 TempData.Put("message", new ResultModel()
                 {
@@ -235,7 +245,7 @@ namespace ETICARET.WebUI.Controllers
 
         public IActionResult ResetPassword(string token)
         {
-            if(token == null)
+            if (token == null)
             {
                 return RedirectToAction("Home", "Index");
             }
@@ -284,52 +294,114 @@ namespace ETICARET.WebUI.Controllers
                 return View(model);
             }
         }
-        // Ödev
-        // Manage IAction Result ı oluşturup login olan kullanıcının bilgileri güncellenebilecek.//fullname//username//email
-        public async Task<IActionResult> Manage(string userName)
+
+        //ödev
+        //Account/manage sayfası oluşturulacak bilgiler dolu bir şekilde girilecek.//email/username/fullname değiştirilecek
+        public async Task<IActionResult> Manage()
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 TempData.Put("message", new ResultModel()
                 {
-                    Title = "Hata Mesajı",
-                    Message = "Kullanıcı bulunamadı tekrar deneyin.",
+                    Title = "Bağlantı Hatası",
+                    Message = "Kullanıcı bilgileri bulunamadı tekrar deneyin.",
                     Css = "danger"
                 });
-                return RedirectToAction("Index", "Home");
+                return View();
             }
+
             var model = new AccountModel
             {
                 FullName = user.FullName,
                 UserName = user.UserName,
-                Email = user.Email,
-                Password = user.PasswordHash
+                Email = user.Email
             };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Manage(AccountModel model)
         {
+
             if (!ModelState.IsValid)
             {
+
                 TempData.Put("message", new ResultModel()
                 {
-                    Title = "Hata Mesajı",
-                    Message = "Bir hata oluştu, tekrar deneyin",
+                    Title = "Giriş Bilgileri",
+                    Message = "Bilgileriniz Hatalıdır",
                     Css = "danger"
                 });
+
                 return View(model);
             }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["message"] = new ResultModel()
+                {
+                    Title = "Bağlantı Hatası",
+                    Message = "Kullanıcı bilgileri bulunamadı, lütfen tekrar deneyin.",
+                    Css = "danger"
+                };
+                return RedirectToAction("Login", "Account");
+            }
 
-            var user = await _userManager.FindByNameAsync(model.UserName);
+
+
 
             user.FullName = model.FullName;
-            user.Email = model.Email;
             user.UserName = model.UserName;
-            user.PasswordHash = model.PasswordHash;
+            user.Email = model.Email;
+            //pasword hashlanmış tutulduğu için değiştirilemedi.
+            //email değişikliği varsa çalışmıyor.
+            if (model.Email != user.Email)
+            {
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new
+                {
+                    userId = user.Id,
+                    token = code
+                });
+                string siteUrl = "https://localhost:7076";
+                string resetUrl = $"{siteUrl}{callbackUrl}";
+                //send email
+                string body = $"Şifrenizi yenilemek için linke <a href='{resetUrl}'> tıklayınız.</a>"; 
+         
+                MailHelper.SendEmail(body, model.Email, "ETRADE Şifre Sıfırlama");
+                TempData.Put("message", new ResultModel()
+                {
+                    Title = "Şifre Sıfırlama",
+                    Message = "Şifre sıfırlama linki email adresinize gönderilmiştir.",
+                    Css = "success"
+                });
+                return RedirectToAction("Login");
+            }
 
             var result = await _userManager.UpdateAsync(user);
 
+
+            if (result.Succeeded)
+            {
+                TempData.Put("message", new ResultModel()
+                {
+                    Title = "Hesap Bilgileri Güncellendi",
+                    Message = "Bilgileriniz başarıyla güncellenmiştir.",
+                    Css = "success"
+                });
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData.Put("message", new ResultModel()
+            {
+                Title = "Hata",
+                Message = "Bilgileriniz güncellenemedi. Lütfen tekrar deneyin.",
+                Css = "danger"
+            });
+            return View(model);
+        }
+
     }
+
 }
