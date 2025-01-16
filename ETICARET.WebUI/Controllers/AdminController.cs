@@ -66,7 +66,7 @@ namespace ETICARET.WebUI.Controllers
                     Price = model.Price
                 };
 
-                if (files.Count > 0 || files == null )
+                if (files.Count > 0 && files != null )
                 {
                     if (files.Count < 4)
                     {
