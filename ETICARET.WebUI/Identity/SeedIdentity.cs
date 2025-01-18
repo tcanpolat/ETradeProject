@@ -20,7 +20,7 @@ namespace ETICARET.WebUI.Identity
                 {
                     UserName = username,
                     Email = email,
-                    FullName = "Eda Karaçoban",
+                    FullName = "Tahsin Canpolat",
                     EmailConfirmed = true,
                 };
 
