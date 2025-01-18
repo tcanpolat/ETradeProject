@@ -66,8 +66,14 @@ namespace ETICARET.WebUI.Controllers
                     Price = model.Price
                 };
 
-                if (files.Count > 0)
+                if (files.Count > 0 && files != null )
                 {
+                    if (files.Count < 4)
+                    {
+                        ModelState.AddModelError("", "Lütfen en az 4 resim yükleyin.");
+                        ViewBag.Category = _categoryService.GetAll().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+                        return View(model);
+                    }
                     foreach (var item in files)
                     {
                         Image image = new Image();
@@ -83,14 +89,7 @@ namespace ETICARET.WebUI.Controllers
                         }
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Lütfen bir ürün resmi yükleyiniz.");
-                    ViewBag.Category = _categoryService.GetAll().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
-                    return View(model);
-
-                }
-
+             
                 entity.ProductCategories = new List<ProductCategory> { new ProductCategory { CategoryId = int.Parse(model.CategoryId), ProductId = entity.Id } };
 
                 _productService.Create(entity);

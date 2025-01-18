@@ -13,6 +13,7 @@ namespace ETICARET.WebUI.Models
         [StringLength(200, MinimumLength = 5, ErrorMessage = "Ürün açıklaması min 5 max 200 karakter olmalıdır.")]
         public string Description { get; set; }
         [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Fiyat geçerli bir değer olmalıdır. Lütfen pozitif bir sayı giriniz.")]
         public decimal Price { get; set; }
         public List<Image> Images { get; set; }
 
