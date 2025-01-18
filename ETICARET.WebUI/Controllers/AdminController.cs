@@ -124,7 +124,7 @@ namespace ETICARET.WebUI.Controllers
 				Id = entity.Id,
 				Name = entity.Name,
 				Description = entity.Description,
-				Price = decimal.ToInt32(entity.Price), 
+				Price = entity.Price, 
 				Images = entity.Images,
 				SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
 			};
