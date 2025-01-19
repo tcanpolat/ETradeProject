@@ -295,8 +295,7 @@ namespace ETICARET.WebUI.Controllers
             }
         }
 
-        //ödev
-        //Account/manage sayfası oluşturulacak bilgiler dolu bir şekilde girilecek.//email/username/fullname değiştirilecek
+        
         public async Task<IActionResult> Manage()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -354,8 +353,7 @@ namespace ETICARET.WebUI.Controllers
             user.FullName = model.FullName;
             user.UserName = model.UserName;
             user.Email = model.Email;
-            //pasword hashlanmış tutulduğu için değiştirilemedi.
-            //email değişikliği varsa çalışmıyor.
+           
             if (model.Email != user.Email)
             {
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -401,9 +399,7 @@ namespace ETICARET.WebUI.Controllers
             });
             return View(model);
         }
-        // Ödev
-        // Manage IAction Result ı oluşturup login olan kullanıcının bilgileri güncellenebilecek.
-        // Yeni Branchte yapılacak.
+      
 
     }
 
