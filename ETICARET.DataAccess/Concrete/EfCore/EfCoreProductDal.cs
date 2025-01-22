@@ -91,10 +91,23 @@ namespace ETICARET.DataAccess.Concrete.EfCore
                         ProductId = entity.Id,
                         CategoryId = catId,
                     }).ToList();
-                    products.Images = entity.Images;
-                }
+                    // Eski resimleri veritabanından sil
+                    var oldImages = context.Images.Where(i => i.ProductId == entity.Id).ToList();
+                    if (oldImages.Any())
+                    {
+                        context.Images.RemoveRange(oldImages);
 
-                context.SaveChanges();
+                    }
+                    // Yeni resimleri veritabanına ekle
+                    if (entity.Images.Any())
+                    {
+                        foreach (var image in entity.Images)
+                        {
+                            context.Images.Add(image);
+                        }
+                    }
+                    context.SaveChanges();
+                }
             }
         }
 

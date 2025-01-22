@@ -1,4 +1,5 @@
 ﻿using ETICARET.Business.Abstract;
+using ETICARET.DataAccess.Concrete.EfCore;
 using ETICARET.Entities;
 using ETICARET.WebUI.Identity;
 using ETICARET.WebUI.Models;
@@ -103,11 +104,11 @@ namespace ETICARET.WebUI.Controllers
             return View(model);
 
         }
-
+        // Not : Önyüzde 4 resmi değiştirmeden kayıt edersek hata vermiyor.4 resmin 4 ünü de değiştirmessek yani yalnızca 1 veya 2 resim değişikliği yaparsak hata veriyor.
 
         public IActionResult EditProduct(int id)
         {
-            if(id == null)
+            if(id == 0)
             {
                 return NotFound();
             }
@@ -125,15 +126,16 @@ namespace ETICARET.WebUI.Controllers
 				Name = entity.Name,
 				Description = entity.Description,
 				Price = entity.Price, 
-				Images = entity.Images,
-				SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
+				Images = entity.Images.ToList(), // entitydeki resimler birden fazla olduğu için listeledik.
+                SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
 			};
+            
 
-			ViewBag.Categories = _categoryService.GetAll();
+          
+
+            ViewBag.Categories = _categoryService.GetAll();
 
             return View(model);
-
-
         }
 
         [HttpPost]
@@ -149,10 +151,17 @@ namespace ETICARET.WebUI.Controllers
             entity.Description = model.Description;
             entity.Price = model.Price;
 
-            if(files != null)
+            if(files != null && files.Count > 0)
             {
                 foreach (var file in files)
                 {
+                    using (var context = new DataContext())
+                    {
+                        var existingImages = context.Images.Where(i => i.ProductId == entity.Id).ToList();
+                        context.Images.RemoveRange(existingImages); // Eski resimleri sil
+                        await context.SaveChangesAsync();
+                    }
+
                     Image image = new Image();
                     image.ImageUrl = file.FileName;
 
@@ -168,6 +177,12 @@ namespace ETICARET.WebUI.Controllers
             }
 
             _productService.Update(entity,categoryIds);
+            // Yeni resimleri veritabanına ekle
+            using (var context = new DataContext())
+            {
+                context.Images.AddRange(entity.Images);
+                await context.SaveChangesAsync();
+            }
 
             return RedirectToAction("ProductList");
         }

@@ -7,6 +7,7 @@ namespace ETICARET.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        [Required]
         public List<Image> Images { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Fiyat geçerli bir değer olmalıdır. Lütfen pozitif bir sayı giriniz.")]
         public decimal Price { get; set; }

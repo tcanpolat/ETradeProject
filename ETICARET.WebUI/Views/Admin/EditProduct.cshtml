@@ -21,7 +21,7 @@
         CKEDITOR.replace("editor")
     </script>
 }
-<h1>Edit Product</h1>
+<h1>@ViewData["title"]</h1>
 <hr/>
 <form asp-controller="Admin" asp-action="EditProduct" method="POST" enctype="multipart/form-data">
     <div class="row">
@@ -35,7 +35,6 @@
             @foreach(var image in Model.Images)
             {
                 <div class="col-md-9 offset-md-3 mb-1">
-                    <label asp-for="@image.ImageUrl" class="form-label"></label>
                     <img src="~/img/@image.ImageUrl" width="80" id="imgPreview"/>
                     <input type="file" name="files" value="" id="fileImage" />
                 </div>
