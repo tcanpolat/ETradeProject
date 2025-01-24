@@ -66,30 +66,28 @@ namespace ETICARET.WebUI.Controllers
                     Price = model.Price
                 };
 
-                if (files.Count > 0 && files != null )
+                if (files.Count < 4 || files == null)
                 {
-                    if (files.Count < 4)
+                    ModelState.AddModelError("", "Lütfen en az 4 resim yükleyin.");
+                    ViewBag.Category = _categoryService.GetAll().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
+                    return View(model);
+                }
+                foreach (var item in files)
+                {
+                    Image image = new Image();
+                    image.ImageUrl = item.FileName;
+
+                    entity.Images.Add(image);
+
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", item.FileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        ModelState.AddModelError("", "Lütfen en az 4 resim yükleyin.");
-                        ViewBag.Category = _categoryService.GetAll().Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
-                        return View(model);
-                    }
-                    foreach (var item in files)
-                    {
-                        Image image = new Image();
-                        image.ImageUrl = item.FileName;
-
-                        entity.Images.Add(image);
-
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", item.FileName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await item.CopyToAsync(stream);
-                        }
+                        await item.CopyToAsync(stream);
                     }
                 }
-             
+
+
                 entity.ProductCategories = new List<ProductCategory> { new ProductCategory { CategoryId = int.Parse(model.CategoryId), ProductId = entity.Id } };
 
                 _productService.Create(entity);
@@ -107,29 +105,29 @@ namespace ETICARET.WebUI.Controllers
 
         public IActionResult EditProduct(int id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var entity = _productService.GetProductDetail(id);
 
-            if(entity == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-			var model = new ProductModel()
-			{
-				Id = entity.Id,
-				Name = entity.Name,
-				Description = entity.Description,
-				Price = entity.Price, 
-				Images = entity.Images,
-				SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
-			};
+            var model = new ProductModel()
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                Price = entity.Price,
+                Images = entity.Images,
+                SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
+            };
 
-			ViewBag.Categories = _categoryService.GetAll();
+            ViewBag.Categories = _categoryService.GetAll();
 
             return View(model);
 
@@ -141,15 +139,16 @@ namespace ETICARET.WebUI.Controllers
         {
             var entity = _productService.GetById(model.Id);
 
-            if (entity == null) {
-                return NotFound();                
+            if (entity == null)
+            {
+                return NotFound();
             }
 
             entity.Name = model.Name;
             entity.Description = model.Description;
             entity.Price = model.Price;
 
-            if(files != null)
+            if (files != null)
             {
                 foreach (var file in files)
                 {
@@ -158,7 +157,7 @@ namespace ETICARET.WebUI.Controllers
 
                     entity.Images.Add(image);
 
-                    var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\img",file.FileName);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.FileName);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
@@ -167,16 +166,17 @@ namespace ETICARET.WebUI.Controllers
                 }
             }
 
-            _productService.Update(entity,categoryIds);
+            _productService.Update(entity, categoryIds);
 
             return RedirectToAction("ProductList");
         }
 
         [HttpPost]
-        public IActionResult DeleteProduct(int productId) {
+        public IActionResult DeleteProduct(int productId)
+        {
             var product = _productService.GetById(productId);
-            
-            if(product != null)
+
+            if (product != null)
             {
                 _productService.Delete(product);
             }
@@ -186,7 +186,7 @@ namespace ETICARET.WebUI.Controllers
 
         public IActionResult CategoryList()
         {
-            return View(new CategoryListModel() { Categories = _categoryService.GetAll()});
+            return View(new CategoryListModel() { Categories = _categoryService.GetAll() });
         }
 
         public IActionResult EditCategory(int? id)
@@ -209,7 +209,7 @@ namespace ETICARET.WebUI.Controllers
         {
             var entity = _categoryService.GetById(model.Id);
 
-            if(entity == null)
+            if (entity == null)
             {
                 return NotFound();
             }
