@@ -4,9 +4,7 @@
 
 @{
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var usernames = Model
-        .ToDictionary(comment => comment.UserId,
-                      comment => _userManager.FindByIdAsync(comment.UserId).Result?.UserName ?? "Anonim");
+    var usernames = ViewBag.Usernames as Dictionary<string, string> ?? new Dictionary<string, string>();
 }
 
 @if (User.Identity.IsAuthenticated)
@@ -34,7 +32,7 @@
         <div class="d-flex">
             <div class="flex-grow-1 ms-1 mt-3">
                 <h6 class="col-md-12">
-                    <span>@usernames[comment.UserId]</span>
+                    <span>@(usernames.ContainsKey(comment.UserId) ? usernames[comment.UserId] : "Anonim")</span>
                     <small class="text-muted">
                         <i>@comment.CreateOn.ToString("ddd, dd MMMM yyyy")</i>
                     </small>
@@ -59,7 +57,7 @@
 }
 else
 {
-    <div class="alert alert-warning mt-2">
-        Yorum Yapılmamıştır. İlk yorumu yapmak ister misin ?
+    <div class="alert alert-info mt-2">
+        Düşüncelerini Yaz
     </div>
 }

@@ -34,11 +34,18 @@ namespace ETICARET.WebUI.Controllers
                 return NotFound();
             }
 
-			var usernames = product.Comments
-	.Select(comment => _userManager.FindByIdAsync(comment.UserId).Result?.UserName ?? "Anonim")
-	.ToList();
+			var users = new Dictionary<string, string>();
+			foreach (var comment in product.Comments)
+			{
+				if (!users.ContainsKey(comment.UserId))
+				{
+					var user = _userManager.FindByIdAsync(comment.UserId).Result;
+					users[comment.UserId] = user?.UserName;
+				}
+			}
 
-			ViewBag.Usernames = usernames;
+			ViewBag.Usernames = users;
+
 
 
 
