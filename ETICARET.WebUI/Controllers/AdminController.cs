@@ -147,8 +147,9 @@ namespace ETICARET.WebUI.Controllers
             entity.Name = model.Name;
             entity.Description = model.Description;
             entity.Price = model.Price;
+            entity.Images = model.Images;
 
-            if (files != null)
+            if (files != null && files.Count > 0)
             {
                 foreach (var file in files)
                 {
