@@ -4,13 +4,16 @@
 
 @{
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var usernames = Model
+        .ToDictionary(comment => comment.UserId,
+                      comment => _userManager.FindByIdAsync(comment.UserId).Result?.UserName ?? "Anonim");
 }
 
 @if (User.Identity.IsAuthenticated)
 {
     <div class="row">
         <div class="col-md-12">
-            <hr/>
+            <hr />
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -24,14 +27,14 @@
         </div>
     </div>
 }
-@if(Model.Count > 0)
+@if (Model.Count > 0)
 {
     @foreach (var comment in Model)
     {
         <div class="d-flex">
             <div class="flex-grow-1 ms-1 mt-3">
                 <h6 class="col-md-12">
-                    <span>Anonim</span> <!-- ödev hangi kullanıcı yorum yaptı.-->
+                    <span>@usernames[comment.UserId]</span>
                     <small class="text-muted">
                         <i>@comment.CreateOn.ToString("ddd, dd MMMM yyyy")</i>
                     </small>
@@ -39,7 +42,7 @@
                 <span class="col-md-10" id="comment_text_@comment.Id" contenteditable="false">
                     @comment.Text
                 </span>
-                @if(User.Identity.IsAuthenticated && userId == comment.UserId)
+                @if (User.Identity.IsAuthenticated && userId == comment.UserId)
                 {
                     <span class="col-md-2 float-end">
                         <button type="button" class="btn btn-warning btn-xs" data-edit-mode="false" onclick="doComment(this,'edit_clicked',@comment.Id,'#comment_text_@comment.Id')">

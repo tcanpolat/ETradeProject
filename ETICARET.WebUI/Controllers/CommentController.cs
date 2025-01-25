@@ -34,8 +34,15 @@ namespace ETICARET.WebUI.Controllers
                 return NotFound();
             }
 
-           
-            return PartialView("_PartialComments", product.Comments);
+			var usernames = product.Comments
+	.Select(comment => _userManager.FindByIdAsync(comment.UserId).Result?.UserName ?? "Anonim")
+	.ToList();
+
+			ViewBag.Usernames = usernames;
+
+
+
+			return PartialView("_PartialComments", product.Comments);
         }
 
         public IActionResult Create(CommentModel model, int? productId)
