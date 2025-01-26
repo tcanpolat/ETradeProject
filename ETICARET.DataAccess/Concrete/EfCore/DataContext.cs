@@ -12,7 +12,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-L027AII\SQLEXPRESS;Database=ETICARET;uid=sa;pwd=1;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer(@"Server=204-HOCAPC1;Database=ETICARET;uid=sa;pwd=1;TrustServerCertificate=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
