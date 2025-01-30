@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Sayfa Bulunamadı</title>
+    <link rel="stylesheet" href="/modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="/modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container text-center">
+        <div class="error-message">
+            <h1 class="display-1">404</h1>
+            <h2 class="display-4">Sayfa Bulunamadı</h2>
+            <p>Aradığınız sayfa maalesef mevcut değil.</p>
+            <p>Belki aşağıdaki bağlantılar yardımcı olabilir:</p>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">Ana Sayfaya Dön</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

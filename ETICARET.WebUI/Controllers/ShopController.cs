@@ -38,12 +38,12 @@ namespace ETICARET.WebUI.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("NotFound", "Home");
             }
             Product product = _productService.GetProductDetail(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return RedirectToAction("NotFound", "Home");
             }
             return View(new ProductDetailsModel()
             {

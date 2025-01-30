@@ -27,6 +27,10 @@ namespace ETICARET.WebUI.Controllers
                 Products = products
             });
         }
+        public IActionResult NotFound()
+        {
+            return View();
+        }
 
     }
 }
