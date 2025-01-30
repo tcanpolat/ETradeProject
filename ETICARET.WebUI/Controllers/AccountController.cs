@@ -382,6 +382,7 @@ namespace ETICARET.WebUI.Controllers
 
             if (result.Succeeded)
             {
+                await _signInManager.RefreshSignInAsync(user);//kullanıcı bilgilerini güncelledikten sonra oturumu günceller.
                 TempData.Put("message", new ResultModel()
                 {
                     Title = "Hesap Bilgileri Güncellendi",
